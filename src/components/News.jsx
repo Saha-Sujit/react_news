@@ -1,14 +1,14 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 
-function News() {
+const News = (props) => {
   const [articles, setArticles] = useState([]);
   const getArticles = () => {
     const api_key = process.env.REACT_APP_API_KEY;
     const page = 1;
     axios
       .get(
-        `https://newsapi.org/v2/top-headlines?country=in&category=&apiKey=${api_key}&page=${page}`
+        `https://newsapi.org/v2/top-headlines?country=in&category=${props.catname}&apiKey=${api_key}&page=${page}`
       )
       .then((response) => {
         setArticles(response.data.articles);
@@ -16,7 +16,7 @@ function News() {
   };
   useEffect(() => {
     getArticles();
-  }, []);
+  }, [props.catname]);
 
   return (
     <>
@@ -27,11 +27,20 @@ function News() {
               return (
                 <div class="p-4 md:w-1/3">
                   <div class="h-full border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden">
-                    <img
-                      class="lg:h-48 md:h-36 w-full object-cover object-center"
-                      src={article.urlToImage}
-                      alt="blog"
-                    />
+                    {article.urlToImage === null ? (
+                      <img
+                        class="lg:h-48 md:h-36 w-full object-cover object-center"
+                        src="https://images.unsplash.com/photo-1634693798046-b00e706c3076?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1032&q=80"
+                        alt="blog"
+                      />
+                    ) : (
+                      <img
+                        class="lg:h-48 md:h-36 w-full object-cover object-center"
+                        src={article.urlToImage}
+                        alt="blog"
+                      />
+                    )}
+
                     <div class="p-6">
                       <h2 class="tracking-widest text-xs title-font font-medium text-gray-400 mb-1">
                         ALL
@@ -72,6 +81,6 @@ function News() {
       </section>
     </>
   );
-}
+};
 
 export default News;
