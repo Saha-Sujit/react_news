@@ -3,20 +3,22 @@ import React, { useState, useEffect } from "react";
 
 const News = (props) => {
   const [articles, setArticles] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalResults, setTotalResults] = useState(0);
+  const api_key = process.env.REACT_APP_API_KEY;
   const getArticles = () => {
-    const api_key = process.env.REACT_APP_API_KEY;
-    const page = 1;
     axios
       .get(
         `https://newsapi.org/v2/top-headlines?country=in&category=${props.catname}&apiKey=${api_key}&page=${page}`
       )
       .then((response) => {
         setArticles(response.data.articles);
+        setTotalResults(response.data.totalResults);
       });
   };
   useEffect(() => {
     getArticles();
-  }, [props.catname]);
+  }, [props.catname, page]);
 
   return (
     <>
@@ -76,6 +78,37 @@ const News = (props) => {
                 </div>
               );
             })}
+          </div>
+          <div className="flex justify-center">
+            {page == 1 ? (
+              <></>
+            ) : (
+              <button
+                className="mt-20 mr-20 bg-slate-800 text-lg p-2 text-white rounded-2xl"
+                onClick={() => {
+                  setPage(page - 1);
+                  getArticles();
+                  setArticles(articles);
+                }}
+              >
+                Previous Page
+              </button>
+            )}
+
+            {articles.length < 20 ? (
+              <p className="mt-20 text-lg p-2 rounded-2xl">No More Pages</p>
+            ) : (
+              <button
+                className="mt-20 bg-slate-800 text-lg p-2 text-white rounded-2xl"
+                onClick={() => {
+                  setPage(page + 1);
+                  getArticles();
+                  setArticles(articles);
+                }}
+              >
+                Next Page
+              </button>
+            )}
           </div>
         </div>
       </section>
