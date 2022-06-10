@@ -43,7 +43,7 @@ const News = (props) => {
 
                     <div class="p-6">
                       <h2 class="tracking-widest text-xs title-font font-medium text-gray-400 mb-1">
-                        ALL
+                        {props.catname ? props.catname.toUpperCase() : "ALL"}
                       </h2>
                       <h1 class="title-font text-lg font-medium text-gray-900 mb-3">
                         {article.title}
