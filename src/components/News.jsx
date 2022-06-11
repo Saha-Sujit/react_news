@@ -1,24 +1,23 @@
 import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 const News = (props) => {
   const [articles, setArticles] = useState([]);
   const [page, setPage] = useState(1);
-  const [totalResults, setTotalResults] = useState(0);
   const api_key = process.env.REACT_APP_API_KEY;
-  const getArticles = () => {
+  const getArticles = useCallback(() => {
     axios
       .get(
         `https://newsapi.org/v2/top-headlines?country=in&category=${props.catname}&apiKey=${api_key}&page=${page}`
       )
       .then((response) => {
         setArticles(response.data.articles);
-        setTotalResults(response.data.totalResults);
       });
-  };
+  }, [api_key, props.catname, page]);
+
   useEffect(() => {
     getArticles();
-  }, [props.catname, page]);
+  }, [getArticles]);
 
   return (
     <>
@@ -80,7 +79,7 @@ const News = (props) => {
             })}
           </div>
           <div className="flex justify-center">
-            {page == 1 ? (
+            {page === 1 ? (
               <></>
             ) : (
               <button
