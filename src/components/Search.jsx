@@ -1,19 +1,21 @@
 import axios from "axios";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 
-const News = (props) => {
+const Search = () => {
   const [articles, setArticles] = useState([]);
   const [page, setPage] = useState(1);
+  const [q, setQ] = useState("all");
+  const [query, setQuery] = useState("all");
   const api_key = process.env.REACT_APP_API_KEY;
   const getArticles = useCallback(() => {
     axios
       .get(
-        `https://newsapi.org/v2/top-headlines?country=in&category=${props.catname}&apiKey=${api_key}&page=${page}`
+        `https://newsapi.org/v2/everything?q=${query}&apiKey=${api_key}&page=${page}`
       )
       .then((response) => {
         setArticles(response.data.articles);
       });
-  }, [api_key, props.catname, page]);
+  }, [api_key, query, page]);
 
   useEffect(() => {
     getArticles();
@@ -23,6 +25,23 @@ const News = (props) => {
     <>
       <section className="text-gray-600 body-font">
         <div className="container px-5 py-24 mx-auto">
+          <div className="text-center pb-20">
+            <input
+              className="px-4 py-2 rounded-2xl mr-4 text-xl bg-slate-100"
+              type="text"
+              placeholder="search"
+              onChange={(e) => setQ(e.target.value)}
+            />
+            <button
+              className="bg-black hover:bg-slate-800 text-xl text-white px-4 py-2 rounded-2xl"
+              onClick={() => {
+                setQuery(q);
+                setPage(1);
+              }}
+            >
+              Search
+            </button>
+          </div>
           <div className="flex flex-wrap -m-4">
             {articles.map((article) => {
               return (
@@ -43,9 +62,6 @@ const News = (props) => {
                     )}
 
                     <div className="p-6">
-                      <h2 className="tracking-widest text-xs title-font font-medium text-gray-400 mb-1">
-                        {props.catname ? props.catname.toUpperCase() : "ALL"}
-                      </h2>
                       <h1 className="title-font text-lg font-medium text-gray-900 mb-3">
                         {article.title}
                       </h1>
@@ -117,4 +133,4 @@ const News = (props) => {
   );
 };
 
-export default News;
+export default Search;
